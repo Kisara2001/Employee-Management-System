@@ -5,6 +5,21 @@ const GENDERS = ["MALE", "FEMALE", "OTHER"];
 const EMP_TYPES = ["PERMANENT", "CONTRACT", "INTERNSHIP"];
 const STATUSES = ["ACTIVE", "INACTIVE", "TERMINATED", "RESIGNED"];
 
+/* ----------------------- Floating field helper ----------------------- */
+function FloatField({ label, children, filled, hint, style }) {
+  return (
+    <div
+      className="ff field"
+      data-filled={filled ? "true" : "false"}
+      style={style}
+    >
+      {children}
+      <label className="ff-label">{label}</label>
+      {hint && <div className="ff-hint">{hint}</div>}
+    </div>
+  );
+}
+
 export default function Employees() {
   const [list, setList] = useState([]);
   const [q, setQ] = useState("");
@@ -155,7 +170,6 @@ export default function Employees() {
   return (
     <div className="ems-wrap">
       <style>{`
-        /* High-contrast light theme */
         :root{
           --panel-2:#ffffff;
           --panel:#f6f8fc;
@@ -167,15 +181,6 @@ export default function Employees() {
           --ring:rgba(59,130,246,.22);
         }
         .ems-wrap{ color:var(--ink); background:#fff; padding-bottom:16px; }
-        .hero{ margin:8px 0 16px; display:flex; align-items:center; gap:10px; }
-        .bar{
-          height:8px; flex:1; border-radius:999px;
-          background:linear-gradient(90deg, var(--accent), var(--accent2), var(--accent));
-          background-size:200% 100%; animation: slide 8s linear infinite;
-          box-shadow:0 6px 18px rgba(59,130,246,.25);
-        }
-        @keyframes slide{ 0%{background-position:0% 0} 100%{background-position:200% 0} }
-
         .card{
           background:linear-gradient(180deg, var(--panel-2), var(--panel));
           border:1px solid var(--bd);
@@ -183,36 +188,38 @@ export default function Employees() {
           padding:14px;
           box-shadow:0 6px 24px rgba(0,0,0,.06);
         }
-        .card + .card{ margin-top:14px; }
         .toolbar{ display:flex; gap:10px; align-items:center; flex-wrap:wrap; }
-
-        .input, .select, .date, .textarea{
-          <width:90></width:90>%; background:#fff; border:1px solid var(--bd); color:var(--ink);
-          padding:10px 12px; border-radius:10px; outline:none;
-          transition: box-shadow .15s ease, border .15s ease, background .15s ease;
-        }
-        .input:focus, .select:focus, .date:focus, .textarea:focus{
-          border-color: var(--accent);
-          box-shadow:0 0 0 4px var(--ring);
-        }
         .btn{
           background:linear-gradient(135deg, var(--accent), var(--accent2));
           color:#06121f; font-weight:800; letter-spacing:.3px;
           border:none; border-radius:10px; padding:10px 14px; cursor:pointer;
           box-shadow:0 8px 20px rgba(59,130,246,.25);
         }
-        .btn.secondary{
-          background:#f3f6fb; color:#0e1726;
-          border:1px solid var(--bd); box-shadow:none;
-        }
+        .btn.secondary{ background:#f3f6fb; color:#0e1726; border:1px solid var(--bd); box-shadow:none; }
 
-        /* >>> Responsive grid fix <<< */
-        .grid{
-          display:grid;
-          gap:16px;
-          grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-        }
+        /* Grid for form */
+        .grid{ display:grid; gap:16px; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); }
 
+        /* -------- Floating fields -------- */
+        .field{ position:relative; }
+        .control{
+          width:100%; height:44px; background:#fff; color:var(--ink);
+          border:1px solid var(--bd); border-radius:10px;
+          padding:18px 12px 10px 12px; outline:none;
+          transition:border .15s ease, box-shadow .15s ease;
+        }
+        .control:focus{ border-color:var(--accent); box-shadow:0 0 0 4px var(--ring); }
+        .ff-label{
+          position:absolute; left:10px; top:50%; transform:translateY(-50%);
+          background:#fff; padding:0 6px; color:#8aa0bd; border-radius:6px;
+          pointer-events:none; transition:all .15s ease;
+        }
+        .field:focus-within .ff-label,
+        .field[data-filled="true"] .ff-label{
+          top:-8px; transform:none; font-size:12px; color:var(--accent);
+          box-shadow:0 0 0 6px #fff inset;
+        }
+        .ff-hint{ position:absolute; right:10px; bottom:6px; font-size:11px; color:#8aa0bd; }
         .table-wrap{ overflow:auto; border-radius:12px; border:1px solid var(--bd); background:#fff; }
         table{ width:100%; border-collapse:collapse; min-width:820px; }
         thead th{
@@ -222,27 +229,28 @@ export default function Employees() {
         tbody td{ padding:10px; border-bottom:1px solid #eef1f6; font-size:14px; color:#0e1726; }
         tbody tr:nth-child(odd){ background:#fafcff; }
         tbody tr:hover{ background:#f2f6ff; }
-
-        .section-title{ display:flex; align-items:center; justify-content:space-between; gap:10px; margin:6px 0 10px; }
         .muted{ color:var(--muted); font-size:13px; }
+        .input{ height:44px; }
       `}</style>
-
-      {/* Header accent */}
-      {/* <div className="hero">
-        <div className="bar" />
-      </div> */}
 
       {/* Search */}
       <div className="card">
-        <div className="section-title">
+        <div
+          style={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "space-between",
+            gap: 10,
+          }}
+        >
           <h3 style={{ margin: 0 }}>Employees</h3>
           <div className="muted">
             {list.length} result{list.length === 1 ? "" : "s"}
           </div>
         </div>
-        <div className="toolbar">
+        <div className="toolbar" style={{ marginTop: 10 }}>
           <input
-            className="input"
+            className="control input"
             placeholder="Search by name, email, code…"
             value={q}
             onChange={(e) => setQ(e.target.value)}
@@ -265,130 +273,164 @@ export default function Employees() {
         </h4>
 
         <form onSubmit={submit} className="grid" style={{ maxWidth: 1100 }}>
-          <input
-            className="input"
-            required
-            placeholder="Code (EMP-0001)"
-            value={form.code}
-            onChange={(e) => setForm({ ...form, code: e.target.value })}
-          />
-          <input
-            className="input"
-            required
-            placeholder="Email"
-            value={form.email}
-            onChange={(e) => setForm({ ...form, email: e.target.value })}
-          />
-          <input
-            className="input"
-            placeholder="Phone"
-            value={form.phone}
-            onChange={(e) => setForm({ ...form, phone: e.target.value })}
-          />
+          <FloatField label="Code (EMP-0001)" filled={!!form.code}>
+            <input
+              className="control input"
+              value={form.code}
+              onChange={(e) => setForm({ ...form, code: e.target.value })}
+              required
+            />
+          </FloatField>
 
-          <input
-            className="input"
-            required
-            placeholder="First Name"
-            value={form.firstName}
-            onChange={(e) => setForm({ ...form, firstName: e.target.value })}
-          />
-          <input
-            className="input"
-            required
-            placeholder="Last Name"
-            value={form.lastName}
-            onChange={(e) => setForm({ ...form, lastName: e.target.value })}
-          />
-          <select
-            className="select"
-            value={form.gender}
-            onChange={(e) => setForm({ ...form, gender: e.target.value })}
-          >
-            <option value="">Gender (optional)</option>
-            {GENDERS.map((g) => (
-              <option key={g} value={g}>
-                {g}
-              </option>
-            ))}
-          </select>
+          <FloatField label="Email" filled={!!form.email}>
+            <input
+              className="control input"
+              value={form.email}
+              onChange={(e) => setForm({ ...form, email: e.target.value })}
+              required
+            />
+          </FloatField>
 
-          <input
-            className="date"
-            type="date"
-            value={form.dob}
-            onChange={(e) => setForm({ ...form, dob: e.target.value })}
-          />
-          <select
-            className="select"
-            value={form.departmentId}
-            onChange={(e) => setForm({ ...form, departmentId: e.target.value })}
-          >
-            <option value="">Department</option>
-            {departments.map((d) => (
-              <option key={d._id} value={d._id}>
-                {d.name}
-              </option>
-            ))}
-          </select>
+          <FloatField label="Phone" filled={!!form.phone}>
+            <input
+              className="control input"
+              value={form.phone}
+              onChange={(e) => setForm({ ...form, phone: e.target.value })}
+            />
+          </FloatField>
 
-          {/* Address — full row on any width */}
-          <input
-            className="input"
-            placeholder="Address"
-            value={form.address}
-            onChange={(e) => setForm({ ...form, address: e.target.value })}
+          <FloatField label="First Name" filled={!!form.firstName}>
+            <input
+              className="control input"
+              value={form.firstName}
+              onChange={(e) => setForm({ ...form, firstName: e.target.value })}
+              required
+            />
+          </FloatField>
+
+          <FloatField label="Last Name" filled={!!form.lastName}>
+            <input
+              className="control input"
+              value={form.lastName}
+              onChange={(e) => setForm({ ...form, lastName: e.target.value })}
+              required
+            />
+          </FloatField>
+
+          <FloatField label="Gender (optional)" filled={!!form.gender}>
+            <select
+              className="control"
+              value={form.gender}
+              onChange={(e) => setForm({ ...form, gender: e.target.value })}
+            >
+              <option value=""></option>
+              {GENDERS.map((g) => (
+                <option key={g} value={g}>
+                  {g}
+                </option>
+              ))}
+            </select>
+          </FloatField>
+
+          <FloatField label="Date of Birth" filled={!!form.dob}>
+            <input
+              className="control"
+              type="date"
+              value={form.dob}
+              onChange={(e) => setForm({ ...form, dob: e.target.value })}
+            />
+          </FloatField>
+
+          <FloatField label="Department" filled={!!form.departmentId}>
+            <select
+              className="control"
+              value={form.departmentId}
+              onChange={(e) =>
+                setForm({ ...form, departmentId: e.target.value })
+              }
+            >
+              <option value=""></option>
+              {departments.map((d) => (
+                <option key={d._id} value={d._id}>
+                  {d.name}
+                </option>
+              ))}
+            </select>
+          </FloatField>
+
+          <FloatField
+            label="Address"
+            filled={!!form.address}
             style={{ gridColumn: "1 / -2" }}
-          />
-
-          <input
-            className="input"
-            placeholder="Designation"
-            value={form.designation}
-            onChange={(e) => setForm({ ...form, designation: e.target.value })}
-          />
-          <input
-            className="date"
-            type="date"
-            value={form.joinDate}
-            onChange={(e) => setForm({ ...form, joinDate: e.target.value })}
-          />
-          <select
-            className="select"
-            value={form.employmentType}
-            onChange={(e) =>
-              setForm({ ...form, employmentType: e.target.value })
-            }
           >
-            {EMP_TYPES.map((t) => (
-              <option key={t} value={t}>
-                {t}
-              </option>
-            ))}
-          </select>
+            <input
+              className="control input"
+              value={form.address}
+              onChange={(e) => setForm({ ...form, address: e.target.value })}
+            />
+          </FloatField>
 
-          <select
-            className="select"
-            value={form.status}
-            onChange={(e) => setForm({ ...form, status: e.target.value })}
-          >
-            {STATUSES.map((s) => (
-              <option key={s} value={s}>
-                {s}
-              </option>
-            ))}
-          </select>
+          <FloatField label="Designation" filled={!!form.designation}>
+            <input
+              className="control input"
+              value={form.designation}
+              onChange={(e) =>
+                setForm({ ...form, designation: e.target.value })
+              }
+            />
+          </FloatField>
 
-          {/* Manager ID – take 2 columns on large screens, full on small */}
-          <input
-            className="input"
-            placeholder="Manager ID (optional)"
-            value={form.managerId}
-            onChange={(e) => setForm({ ...form, managerId: e.target.value })}
+          <FloatField label="Join Date" filled={!!form.joinDate}>
+            <input
+              className="control"
+              type="date"
+              value={form.joinDate}
+              onChange={(e) => setForm({ ...form, joinDate: e.target.value })}
+            />
+          </FloatField>
+
+          <FloatField label="Employment Type" filled={!!form.employmentType}>
+            <select
+              className="control"
+              value={form.employmentType}
+              onChange={(e) =>
+                setForm({ ...form, employmentType: e.target.value })
+              }
+            >
+              {EMP_TYPES.map((t) => (
+                <option key={t} value={t}>
+                  {t}
+                </option>
+              ))}
+            </select>
+          </FloatField>
+
+          <FloatField label="Status" filled={!!form.status}>
+            <select
+              className="control"
+              value={form.status}
+              onChange={(e) => setForm({ ...form, status: e.target.value })}
+            >
+              {STATUSES.map((s) => (
+                <option key={s} value={s}>
+                  {s}
+                </option>
+              ))}
+            </select>
+          </FloatField>
+
+          <FloatField
+            label="Manager ID (optional)"
+            filled={!!form.managerId}
             style={{ gridColumn: "span 1" }}
-          />
+          >
+            <input
+              className="control input"
+              value={form.managerId}
+              onChange={(e) => setForm({ ...form, managerId: e.target.value })}
+            />
+          </FloatField>
 
-          {/* Button row — full width to avoid cramping */}
           <div
             style={{
               display: "flex",
