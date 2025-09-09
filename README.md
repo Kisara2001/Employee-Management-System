@@ -5,7 +5,7 @@ Separate folders for backend and frontend.
 
 ## 1) Prereqs
 - Node.js 18+
-- MongoDB (local or Atlas)
+- MongoDB (Atlas)
 - Two terminals
 
 ## 2) Backend Setup
