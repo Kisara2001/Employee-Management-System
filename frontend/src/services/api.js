@@ -31,7 +31,6 @@ async function request(path, options = {}) {
 }
 
 export const api = {
-  // NOTE: no /api prefix now
   login: (email, password) =>
     request("/auth/login", { method: "POST", body: { email, password } }),
 
