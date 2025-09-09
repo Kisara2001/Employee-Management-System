@@ -313,12 +313,20 @@ export default function Employees() {
             ))}
           </select>
 
-          <input
-            className="date"
-            type="date"
-            value={form.dob}
-            onChange={(e) => setForm({ ...form, dob: e.target.value })}
-          />
+          <div className="relative">
+            <input
+              type="date"
+              value={form.dob || ""}
+              onChange={(e) => setForm({ ...form, dob: e.target.value })}
+              className="w-full rounded-md border px-3 py-2"
+            />
+            {!form.dob && (
+              <span className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">
+                Date of Birth
+              </span>
+            )}
+          </div>
+
           <select
             className="select"
             value={form.departmentId}
