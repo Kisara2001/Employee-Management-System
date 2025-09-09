@@ -208,6 +208,8 @@ export default function Employees() {
           padding:18px 12px 10px 12px; outline:none;
           transition:border .15s ease, box-shadow .15s ease;
         }
+        /* Make selects match height better */
+        select.control { padding-top: 10px; padding-bottom: 10px; height: 44px; }
         .control:focus{ border-color:var(--accent); box-shadow:0 0 0 4px var(--ring); }
         .ff-label{
           position:absolute; left:10px; top:50%; transform:translateY(-50%);
@@ -220,6 +222,23 @@ export default function Employees() {
           box-shadow:0 0 0 6px #fff inset;
         }
         .ff-hint{ position:absolute; right:10px; bottom:6px; font-size:11px; color:#8aa0bd; }
+        .muted{ color:var(--muted); font-size:13px; }
+        .input{ height:44px; }
+
+        /* --- IMPORTANT: Fix 'yyyy-mm-dd' ghost text clashing with floating label --- */
+        /* Hide WebKit date edit text ONLY when the field is empty and not focused */
+        .ff[data-filled="false"] input[type="date"]:not(:focus)::-webkit-datetime-edit,
+        .ff[data-filled="false"] input[type="date"]:not(:focus)::-webkit-datetime-edit-year-field,
+        .ff[data-filled="false"] input[type="date"]:not(:focus)::-webkit-datetime-edit-month-field,
+        .ff[data-filled="false"] input[type="date"]:not(:focus)::-webkit-datetime-edit-day-field {
+          color: transparent;
+        }
+        /* Optional: hide caret while empty to avoid a lone blinking bar */
+        .ff[data-filled="false"] input[type="date"]:not(:focus) { caret-color: transparent; }
+        /* Restore text color generally */
+        .ff input[type="date"]::-webkit-datetime-edit { color: inherit; }
+
+        /* Table */
         .table-wrap{ overflow:auto; border-radius:12px; border:1px solid var(--bd); background:#fff; }
         table{ width:100%; border-collapse:collapse; min-width:820px; }
         thead th{
@@ -229,8 +248,6 @@ export default function Employees() {
         tbody td{ padding:10px; border-bottom:1px solid #eef1f6; font-size:14px; color:#0e1726; }
         tbody tr:nth-child(odd){ background:#fafcff; }
         tbody tr:hover{ background:#f2f6ff; }
-        .muted{ color:var(--muted); font-size:13px; }
-        .input{ height:44px; }
       `}</style>
 
       {/* Search */}
@@ -279,23 +296,28 @@ export default function Employees() {
               value={form.code}
               onChange={(e) => setForm({ ...form, code: e.target.value })}
               required
+              autoComplete="off"
             />
           </FloatField>
 
           <FloatField label="Email" filled={!!form.email}>
             <input
               className="control input"
+              type="email"
               value={form.email}
               onChange={(e) => setForm({ ...form, email: e.target.value })}
               required
+              autoComplete="email"
             />
           </FloatField>
 
           <FloatField label="Phone" filled={!!form.phone}>
             <input
               className="control input"
+              type="tel"
               value={form.phone}
               onChange={(e) => setForm({ ...form, phone: e.target.value })}
+              autoComplete="tel"
             />
           </FloatField>
 
@@ -305,6 +327,7 @@ export default function Employees() {
               value={form.firstName}
               onChange={(e) => setForm({ ...form, firstName: e.target.value })}
               required
+              autoComplete="given-name"
             />
           </FloatField>
 
@@ -314,6 +337,7 @@ export default function Employees() {
               value={form.lastName}
               onChange={(e) => setForm({ ...form, lastName: e.target.value })}
               required
+              autoComplete="family-name"
             />
           </FloatField>
 
@@ -336,6 +360,7 @@ export default function Employees() {
             <input
               className="control"
               type="date"
+              placeholder=" " /* important for floating label */
               value={form.dob}
               onChange={(e) => setForm({ ...form, dob: e.target.value })}
             />
@@ -367,6 +392,7 @@ export default function Employees() {
               className="control input"
               value={form.address}
               onChange={(e) => setForm({ ...form, address: e.target.value })}
+              autoComplete="street-address"
             />
           </FloatField>
 
@@ -384,6 +410,7 @@ export default function Employees() {
             <input
               className="control"
               type="date"
+              placeholder=" " /* important for floating label */
               value={form.joinDate}
               onChange={(e) => setForm({ ...form, joinDate: e.target.value })}
             />
@@ -428,6 +455,7 @@ export default function Employees() {
               className="control input"
               value={form.managerId}
               onChange={(e) => setForm({ ...form, managerId: e.target.value })}
+              autoComplete="off"
             />
           </FloatField>
 
