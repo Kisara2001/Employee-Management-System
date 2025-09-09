@@ -1,5 +1,5 @@
 
-# EMS Quickstart (No Payroll) — 3-4 Hour Build
+# EMS Quickstart
 
 Separate folders for backend and frontend.
 
