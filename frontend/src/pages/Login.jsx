@@ -15,7 +15,7 @@ export default function Login({ onLogin }) {
     try {
       const { token } = await api.login(email.trim(), password);
       setToken(token);
-      onLogin();
+      onLogin?.();
     } catch (e) {
       setError(e.message || "Login failed");
     } finally {
@@ -25,8 +25,12 @@ export default function Login({ onLogin }) {
 
   return (
     <>
-      {/* Inline styles so it’s fully self-contained */}
+      {/* Self-contained styles */}
       <style>{`
+        /* --- remove browser gutters and let the bg touch edges --- */
+        html, body, #root { height: 100%; margin: 0; padding: 0; }
+        body { overflow: hidden; }
+
         :root{
           --bg1: #0b0f1a;
           --bg2: #0e1a2b;
@@ -38,20 +42,26 @@ export default function Login({ onLogin }) {
           --primary: #7aa2ff;
           --primary-2: #86ffd3;
           --error: #ff6b6b;
-          --success: #5eea9a;
           --glow: 0 10px 40px rgba(122,162,255,0.25);
         }
+
+        /* --- fullscreen background container --- */
         .login-wrap{
-          min-height:100vh;
-          display:grid;
-          place-items:center;
-          color:var(--text);
-          background: radial-gradient(1200px 800px at 20% 10%, #0c1730 0%, transparent 60%),
-                      radial-gradient(900px 700px at 80% 90%, #112641 0%, transparent 60%),
-                      linear-gradient(160deg, var(--bg1), var(--bg2));
-          position:relative;
-          overflow:hidden;
+          position: fixed;         /* cover the viewport */
+          inset: 0;                /* top/right/bottom/left: 0 */
+          width: 100vw;
+          height: 100dvh;          /* dynamic viewport height (mobile-safe) */
+          min-height: 100svh;      /* small viewport fallback */
+          display: grid;
+          place-items: center;
+          color: var(--text);
+          background:
+            radial-gradient(1200px 800px at 20% 10%, #0c1730 0%, transparent 60%),
+            radial-gradient(900px 700px at 80% 90%, #112641 0%, transparent 60%),
+            linear-gradient(160deg, var(--bg1), var(--bg2));
+          overflow: hidden;        /* hide orb overflow */
         }
+
         /* floating orbs */
         .orb{
           position:absolute; border-radius:50%; filter:blur(40px); opacity:0.45;
@@ -87,13 +97,10 @@ export default function Login({ onLogin }) {
         h3{ margin:0; letter-spacing:.3px; font-weight:700; }
         .sub{ margin:4px 0 18px; color:var(--muted); font-size:13px; }
 
-        .field{
-          margin-top:10px; display:grid; gap:6px;
-        }
+        .field{ margin-top:10px; display:grid; gap:6px; }
         .label{ font-size:13px; color:var(--muted); }
         .control{
-          position:relative;
-          display:flex; align-items:center;
+          position:relative; display:flex; align-items:center;
           border:1px solid var(--border);
           background: rgba(255,255,255,0.06);
           padding: 12px 12px 12px 42px;
@@ -105,15 +112,14 @@ export default function Login({ onLogin }) {
           box-shadow: 0 0 0 4px rgba(122,162,255,0.12);
           background: rgba(255,255,255,0.09);
         }
-        .icon{
-          position:absolute; left:12px; opacity:0.8;
-        }
+        .icon{ position:absolute; left:12px; opacity:0.8; }
         .input{
           width:100%; background:transparent; border:none; outline:none; color:var(--text);
           font-size:14px; letter-spacing:.2px;
         }
         .toggle{
-          position:absolute; right:10px; cursor:pointer; opacity:.8; border:none; background:none; color:var(--muted);
+          position:absolute; right:10px; cursor:pointer; opacity:.8;
+          border:none; background:none; color:var(--muted);
         }
 
         .btn{
@@ -165,7 +171,6 @@ export default function Login({ onLogin }) {
 
           {error && (
             <div className="error">
-              {/* warning icon */}
               <span style={{ marginRight: 8 }}>⚠️</span>
               {error}
             </div>
@@ -176,7 +181,6 @@ export default function Login({ onLogin }) {
               <label className="label">Email</label>
               <div className="control">
                 <span className="icon" aria-hidden>
-                  {/* mail icon */}
                   <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
                     <path
                       d="M4 6h16v12H4z"
@@ -205,7 +209,6 @@ export default function Login({ onLogin }) {
               <label className="label">Password</label>
               <div className="control">
                 <span className="icon" aria-hidden>
-                  {/* lock icon */}
                   <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
                     <rect
                       x="5"
