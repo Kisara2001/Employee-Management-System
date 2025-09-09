@@ -46,10 +46,11 @@ app.get("/", (_req, res) =>
 app.get("/healthz", (_req, res) => res.status(200).send("ok"));
 
 /* -------------------------------- API --------------------------------- */
-app.use("/api/auth", authRoutes);
-app.use("/api/employees", employeeRoutes);
-app.use("/api/departments", departmentRoutes);
-app.use("/api/attendance", attendanceRoutes);
+// support both /api/... and root /...
+app.use(["/api/auth", "/auth"], authRoutes);
+app.use(["/api/employees", "/employees"], employeeRoutes);
+app.use(["/api/departments", "/departments"], departmentRoutes);
+app.use(["/api/attendance", "/attendance"], attendanceRoutes);
 
 /* -------------------- Mongo connection (serverless) ------------------- */
 const MONGO_URI =
