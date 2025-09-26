@@ -16,6 +16,9 @@
     "test": "node -e \"console.log('Smoke tests can be added with supertest')\"",
     "vercel-build": "npm run build"
   },
+  "engines": {
+    "node": ">=20"
+  },
   "dependencies": {
     "bcryptjs": "^2.4.3",
     "cors": "^2.8.5",
