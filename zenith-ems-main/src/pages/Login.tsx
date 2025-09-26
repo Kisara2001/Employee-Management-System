@@ -1,22 +1,28 @@
-import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { useForm } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { z } from 'zod';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { toast } from '@/hooks/use-toast';
-import { setAuth } from '@/lib/auth';
-import api from '@/lib/api';
-import { Loader2, Building } from 'lucide-react';
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { z } from "zod";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { toast } from "@/hooks/use-toast";
+import { setAuth } from "@/lib/auth";
+import api from "@/lib/api";
+import { Loader2, Building } from "lucide-react";
 
-const ENABLE_DEMO = import.meta.env.VITE_ENABLE_DEMO_LOGIN === 'true';
+const ENABLE_DEMO = import.meta.env.VITE_ENABLE_DEMO_LOGIN === "true";
 
 const loginSchema = z.object({
-  email: z.string().email('Please enter a valid email address'),
-  password: z.string().min(1, 'Password is required'),
+  email: z.string().email("Please enter a valid email address"),
+  password: z.string().min(1, "Password is required"),
 });
 
 type LoginForm = z.infer<typeof loginSchema>;
@@ -37,44 +43,53 @@ export default function Login() {
     setIsLoading(true);
     try {
       // Optional demo mode (UI-only). Disabled unless VITE_ENABLE_DEMO_LOGIN === 'true'.
-      if (ENABLE_DEMO && data.email === 'admin@company.com' && data.password === 'password') {
+      if (
+        ENABLE_DEMO &&
+        data.email === "admin@company.com" &&
+        data.password === "password"
+      ) {
         const mockUser = {
-          id: '1',
-          email: 'admin@company.com',
-          firstName: 'Admin',
-          lastName: 'User',
-          role: 'Administrator',
+          id: "1",
+          email: "admin@company.com",
+          firstName: "Admin",
+          lastName: "User",
+          role: "Administrator",
         };
-        const mockToken = 'demo-jwt-token-' + Date.now();
+        const mockToken = "demo-jwt-token-" + Date.now();
         setAuth(mockToken, mockUser);
-        toast({ title: 'Welcome back!', description: 'You have been successfully logged in.' });
-        navigate('/', { replace: true });
+        toast({
+          title: "Welcome back!",
+          description: "You have been successfully logged in.",
+        });
+        navigate("/", { replace: true });
         return;
       }
 
       // Try real API call for other credentials
-      const response = await api.post('/auth/login', data);
+      const response = await api.post("/auth/login", data);
       const { token, user } = response.data;
       // Normalize backend user shape to frontend expectation
       const normalizedUser = {
         id: user.id || user._id,
         email: user.email,
-        firstName: user.first_name ?? user.firstName ?? '',
-        lastName: user.last_name ?? user.lastName ?? '',
+        firstName: user.first_name ?? user.firstName ?? "",
+        lastName: user.last_name ?? user.lastName ?? "",
         role: user.role,
       };
       setAuth(token, normalizedUser);
       toast({
-        title: 'Welcome back!',
-        description: 'You have been successfully logged in.',
+        title: "Welcome back!",
+        description: "You have been successfully logged in.",
       });
-      navigate('/', { replace: true });
+      navigate("/", { replace: true });
     } catch (error: unknown) {
       const err = error as { response?: { data?: { message?: string } } };
       toast({
-        title: 'Login failed',
-        description: err.response?.data?.message || 'Please use demo credentials: admin@company.com / password',
-        variant: 'destructive',
+        title: "Login failed",
+        description:
+          err.response?.data?.message ||
+          "Please use demo credentials: admin@company.com / password",
+        variant: "destructive",
       });
     } finally {
       setIsLoading(false);
@@ -102,25 +117,29 @@ export default function Login() {
                   id="email"
                   type="email"
                   placeholder="Enter your email"
-                  {...register('email')}
-                  className={errors.email ? 'border-destructive' : ''}
+                  {...register("email")}
+                  className={errors.email ? "border-destructive" : ""}
                 />
                 {errors.email && (
-                  <p className="text-sm text-destructive">{errors.email.message}</p>
+                  <p className="text-sm text-destructive">
+                    {errors.email.message}
+                  </p>
                 )}
               </div>
-              
+
               <div className="space-y-2">
                 <Label htmlFor="password">Password</Label>
                 <Input
                   id="password"
                   type="password"
                   placeholder="Enter your password"
-                  {...register('password')}
-                  className={errors.password ? 'border-destructive' : ''}
+                  {...register("password")}
+                  className={errors.password ? "border-destructive" : ""}
                 />
                 {errors.password && (
-                  <p className="text-sm text-destructive">{errors.password.message}</p>
+                  <p className="text-sm text-destructive">
+                    {errors.password.message}
+                  </p>
                 )}
               </div>
 
@@ -135,17 +154,23 @@ export default function Login() {
                     Signing in...
                   </>
                 ) : (
-                  'Sign In'
+                  "Sign In"
                 )}
               </Button>
             </form>
-            
+
             <div className="mt-6 p-4 rounded-lg bg-accent/10 border border-accent/20">
-              <p className="text-sm font-medium text-accent mb-1">Demo Mode</p>
-              <p className="text-xs text-muted-foreground mb-2">Use these credentials to explore the interface:</p>
+              <p className="text-sm font-medium text-accent mb-1">Admin User</p>
+              <p className="text-xs text-muted-foreground mb-2">
+                Use these credentials to login from the admin user:
+              </p>
               <div className="space-y-1 text-xs">
-                <div><strong>Email:</strong> admin@example.com</div>
-                <div><strong>Password:</strong> Admin@12345</div>
+                <div>
+                  <strong>Email:</strong> admin@example.com
+                </div>
+                <div>
+                  <strong>Password:</strong> Admin@12345
+                </div>
               </div>
             </div>
           </CardContent>
