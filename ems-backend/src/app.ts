@@ -17,7 +17,9 @@ app.get('/health', (_req, res) => {
   res.json({ status: 'ok', time: new Date().toISOString() });
 });
 
-mountSwagger(app);
+app.use("/api/docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
+
+// mountSwagger(app);
 app.use('/api', routes);
 
 app.use(notFound);
