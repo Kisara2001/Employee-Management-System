@@ -1,0 +1,44 @@
+{
+  "name": "ems-backend",
+  "version": "1.0.0",
+  "private": true,
+  "main": "dist/server.js",
+  "scripts": {
+    "dev": "ts-node-dev --respawn --transpile-only src/server.ts",
+    "build": "tsc -p tsconfig.build.json",
+    "start": "node dist/server.js",
+    "seed": "ts-node-dev --transpile-only scripts/seed.ts",
+    "seed:demo": "ts-node-dev --transpile-only scripts/seedDemo.ts",
+    "seed:bulk": "ts-node-dev --transpile-only scripts/seedBulk.ts",
+    "seed:attendance:range": "ts-node-dev --transpile-only scripts/seedAttendanceRange.ts",
+    "lint": "eslint . --ext .ts",
+    "format": "prettier --write \"**/*.{ts,js,json,md}\"",
+    "test": "node -e \"console.log('Smoke tests can be added with supertest')\""
+  },
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.5",
+    "express": "^4.19.2",
+    "exceljs": "^4.3.0",
+    "jsonwebtoken": "^9.0.2",
+    "mongoose": "^8.6.0",
+    "morgan": "^1.10.0",
+    "swagger-ui-express": "^5.0.0",
+    "zod": "^3.23.8"
+  },
+  "devDependencies": {
+    "@types/bcryptjs": "^2.4.6",
+    "@types/cors": "^2.8.17",
+    "@types/express": "^4.17.21",
+    "@types/jsonwebtoken": "^9.0.6",
+    "@types/morgan": "^1.9.6",
+    "@types/node": "^22.5.0",
+    "@types/supertest": "^2.0.16",
+    "eslint": "^9.11.1",
+    "prettier": "^3.3.3",
+    "supertest": "^7.0.0",
+    "ts-node-dev": "^2.0.0",
+    "typescript": "^5.6.2"
+  }
+}

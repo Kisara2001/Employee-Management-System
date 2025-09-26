@@ -1,0 +1,9 @@
+{
+  "extends": "./tsconfig.build.json",
+  "compilerOptions": {
+    "noEmit": true,
+    // For type-checking, include scripts outside src as well
+    "rootDir": "."
+  },
+  "include": ["src", "scripts", "tests"]
+}
