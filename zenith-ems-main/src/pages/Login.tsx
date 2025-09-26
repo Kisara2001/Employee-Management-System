@@ -144,8 +144,8 @@ export default function Login() {
               <p className="text-sm font-medium text-accent mb-1">Demo Mode</p>
               <p className="text-xs text-muted-foreground mb-2">Use these credentials to explore the interface:</p>
               <div className="space-y-1 text-xs">
-                <div><strong>Email:</strong> admin@company.com</div>
-                <div><strong>Password:</strong> password</div>
+                <div><strong>Email:</strong> admin@example.com</div>
+                <div><strong>Password:</strong> Admin@12345</div>
               </div>
             </div>
           </CardContent>
