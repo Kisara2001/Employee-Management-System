@@ -1,5 +1,6 @@
 // ems-backend/api/index.ts
 import serverless from "serverless-http";
+import type { Handler, HandlerContext, HandlerEvent } from "serverless-http";
 import app from "../src/app";
 import { connectDB } from "../src/config/db";
 
@@ -9,24 +10,36 @@ function ensureDB() {
   return dbReady;
 }
 
-// ✅ Only require DB for API calls, not for docs/health/assets
-app.use(async (req, _res, next) => {
-  const p = req.path || req.url || "";
-  if (
-    p === "/health" ||
-    p.startsWith("/docs") || // swagger ui + assets
-    p === "/docs.json" // raw spec
-  ) {
-    return next();
-  }
+function isDocsPath(path: string) {
+  return path === "/docs" || path.startsWith("/docs/");
+}
 
-  try {
-    await ensureDB();
-    next();
-  } catch (err) {
-    next(err);
-  }
-});
+function shouldSkipEnsureDB(path: string | undefined) {
+  if (!path) return false;
+  const cleanPath = path.split("?")[0];
+  return (
+    cleanPath === "/health" ||
+    cleanPath === "/docs.json" ||
+    isDocsPath(cleanPath)
+  );
+}
 
 export const config = { api: { bodyParser: false } };
-export default serverless(app);
+
+const expressHandler = serverless(app);
+
+type ExpressHandler = Handler<unknown, unknown>;
+
+const handler: ExpressHandler = async (
+  event: HandlerEvent,
+  context: HandlerContext
+) => {
+  const path = event?.path || event?.rawPath || event?.rawUrl;
+  if (!shouldSkipEnsureDB(path)) {
+    await ensureDB();
+  }
+
+  return expressHandler(event, context);
+};
+
+export default handler;
