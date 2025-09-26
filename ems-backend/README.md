@@ -15,6 +15,9 @@ On startup you should see:
 - `Server listening on http://localhost:3000`
 - `CORS allowed origin: http://localhost:5173`
 
+To permit multiple front-end domains in production, set `CORS_ORIGINS` (or `CORS_ORIGIN`) to a
+comma-separated list, e.g. `CORS_ORIGINS="https://app.example.com,https://admin.example.com"`.
+
 ## Seeding
 
 - Seed initial admin only: `npm run seed`
