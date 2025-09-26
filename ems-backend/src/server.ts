@@ -10,8 +10,11 @@ async function startLocal() {
     const server = app.listen(port, () => {
       // eslint-disable-next-line no-console
       console.log(`Server listening on http://localhost:${port}`);
+      const corsOrigins = Array.isArray(env.CORS_ORIGIN)
+        ? env.CORS_ORIGIN.join(", ")
+        : env.CORS_ORIGIN;
       // eslint-disable-next-line no-console
-      console.log(`CORS allowed origin: ${env.CORS_ORIGIN}`);
+      console.log(`CORS allowed origin: ${corsOrigins}`);
       // eslint-disable-next-line no-console
       console.log("Swagger docs at /docs");
     });

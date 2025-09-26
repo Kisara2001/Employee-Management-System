@@ -23,7 +23,25 @@ const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || 'Admin@12345';
 const ADMIN_FIRST_NAME = process.env.ADMIN_FIRST_NAME || 'System';
 const ADMIN_LAST_NAME = process.env.ADMIN_LAST_NAME || 'Admin';
 const JWT_SECRET = process.env.JWT_SECRET || 'supersecret_change_me';
-const CORS_ORIGIN = process.env.CORS_ORIGIN || 'http://localhost:5173';
+
+function parseCorsOrigins(value: string | undefined): string[] {
+  if (!value) return [];
+
+  return value
+    .split(',')
+    .map((origin) => origin.trim())
+    .filter(Boolean);
+}
+
+const rawCorsOrigins =
+  process.env.CORS_ORIGINS || process.env.CORS_ORIGIN || 'http://localhost:5173';
+const parsedCorsOrigins = parseCorsOrigins(rawCorsOrigins);
+const corsOrigins = parsedCorsOrigins.length
+  ? parsedCorsOrigins
+  : ['http://localhost:5173'];
+const CORS_ORIGIN: string | string[] =
+  corsOrigins.length === 1 ? corsOrigins[0] : corsOrigins;
+
 
 export const env = {
   PORT,
