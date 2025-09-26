@@ -13,17 +13,19 @@
     "seed:attendance:range": "ts-node-dev --transpile-only scripts/seedAttendanceRange.ts",
     "lint": "eslint . --ext .ts",
     "format": "prettier --write \"**/*.{ts,js,json,md}\"",
-    "test": "node -e \"console.log('Smoke tests can be added with supertest')\""
+    "test": "node -e \"console.log('Smoke tests can be added with supertest')\"",
+    "vercel-build": "npm run build"
   },
   "dependencies": {
     "bcryptjs": "^2.4.3",
     "cors": "^2.8.5",
     "dotenv": "^16.4.5",
-    "express": "^4.19.2",
     "exceljs": "^4.3.0",
+    "express": "^4.19.2",
     "jsonwebtoken": "^9.0.2",
     "mongoose": "^8.6.0",
     "morgan": "^1.10.0",
+    "serverless-http": "^4.0.0",
     "swagger-ui-express": "^5.0.0",
     "zod": "^3.23.8"
   },
