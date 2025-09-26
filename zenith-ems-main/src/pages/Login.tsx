@@ -88,7 +88,7 @@ export default function Login() {
         title: "Login failed",
         description:
           err.response?.data?.message ||
-          "Please use demo credentials: admin@company.com / password",
+          "Invalid Crredentials or server error.",
         variant: "destructive",
       });
     } finally {
