@@ -17,11 +17,10 @@ app.get('/health', (_req, res) => {
   res.json({ status: 'ok', time: new Date().toISOString() });
 });
 
-app.use("/api/docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
+// ✅ mount Swagger at /docs (comes from swagger.ts)
+mountSwagger(app);
 
-// mountSwagger(app);
 app.use('/api', routes);
-
 app.use(notFound);
 app.use(errorHandler);
 
